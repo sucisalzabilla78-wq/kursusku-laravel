@@ -1,0 +1,42 @@
+@import "bootstrap/dist/css/bootstrap.min.css";
+
+/* Brand KursusKu Colors & Styles */
+:root {
+    --kursusku-primary: #0f766e;
+    --kursusku-secondary: #198f82;
+    --kursusku-dark: #134e4a;
+    --kursusku-light: #f3f8f4;
+}
+
+body {
+    background-color: var(--kursusku-light);
+    color: #223047;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.bg-kursusku {
+    background-color: var(--kursusku-primary) !important;
+}
+
+.text-kursusku {
+    color: var(--kursusku-primary) !important;
+}
+
+.btn-kursusku {
+    background-color: var(--kursusku-primary);
+    border-color: var(--kursusku-primary);
+    color: #ffffff;
+}
+
+.btn-kursusku:hover,
+.btn-kursusku:focus {
+    background-color: var(--kursusku-dark);
+    border-color: var(--kursusku-dark);
+    color: #ffffff;
+}
+
+.card-kursusku {
+    border-radius: 12px;
+    border: 1px solid #dbe8e4;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
