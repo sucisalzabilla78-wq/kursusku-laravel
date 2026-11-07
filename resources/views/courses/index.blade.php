@@ -1,78 +1,39 @@
-@extends('layouts.app')
-
-@section('title', 'Daftar Kursus')
-
-@section('content')
-<div class="container py-4">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <div>
-            <h1 class="h3 mb-1">Daftar Kursus</h1>
-            <p class="text-muted mb-0">Data diambil dari MySQL melalui Eloquent.</p>
-        </div>
-        <a href="{{ route('courses.create') }}" class="btn btn-primary">
-            + Tambah Kursus
-        </a>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daftar Kursus</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+        }
+        p {
+            color: #666;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Halaman Daftar Kursus</h1>
+        <p>Selamat datang di KursusKu!</p>
     </div>
-
-    @if(session('success'))
-    <div class="alert alert-success">
-        {{ session('success') }}
-    </div>
-    @endif
-
-    <div class="card">
-        <div class="card-body p-0">
-            <div class="table-responsive">
-                <table class="table table-striped mb-0 align-middle">
-                    <thead>
-                        <tr>
-                            <th>Kode</th>
-                            <th>Nama</th>
-                            <th>Biaya</th>
-                            <th>Kuota</th>
-                            <th>Mulai</th>
-                            <th>Status</th>
-                            <th>Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($courses as $course)
-                        <tr>
-                            <td>{{ $course->code }}</td>
-                            <td>{{ $course->name }}</td>
-                            <td>Rp{{ number_format($course->fee, 0, ',', '.') }}</td>
-                            <td>{{ $course->quota }}</td>
-                            <td>{{ $course->start_date->format('d/m/Y') }}</td>
-                            <td>{{ ucfirst($course->status) }}</td>
-                            <td>
-                                <div class="d-flex gap-1 flex-wrap">
-                                    <a href="{{ route('courses.show', $course) }}" class="btn btn-sm btn-outline-primary">
-                                        Detail
-                                    </a>
-                                    <a href="{{ route('courses.edit', $course) }}" class="btn btn-sm btn-outline-warning">
-                                        Edit
-                                    </a>
-                                    <form method="POST" action="{{ route('courses.destroy', $course) }}" onsubmit="return confirm('Yakin ingin menghapus kursus ini?')">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-sm btn-outline-danger">
-                                            Hapus
-                                        </button>
-                                    </form>
-                                </div>
-                            </td>
-                        </tr>
-                        @empty
-                        <tr>
-                            <td colspan="7" class="text-center py-4 text-muted">
-                                Belum ada data kursus.
-                            </td>
-                        </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-</div>
-@endsection
+</body>
+</html>
