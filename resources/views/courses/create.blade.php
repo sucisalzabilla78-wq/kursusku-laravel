@@ -1,105 +1,226 @@
 @extends('layouts.app')
 
-@section('title', 'Tambah Kursus')
+@section('title', 'Tambah Kursus Baru - KursusKu')
+@section('subtitle', 'Database & CRUD II - Pertemuan 11')
 
 @section('content')
-<div class="container py-4">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h1 class="h3 mb-0">Tambah Kursus Baru</h1>
-        <a href="{{ route('courses.index') }}" class="btn btn-outline-secondary">Kembali</a>
+<style>
+    .form-header {
+        margin-bottom: 25px;
+        padding-bottom: 15px;
+        border-bottom: 2px solid var(--green-light);
+    }
+    .form-header h2 {
+        color: var(--green-darkest);
+        font-size: 24px;
+        margin-bottom: 8px;
+    }
+    .form-header p {
+        color: #666;
+        font-size: 14px;
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        margin-bottom: 20px;
+    }
+    .form-group {
+        margin-bottom: 20px;
+    }
+    .form-group label {
+        display: block;
+        font-weight: 600;
+        color: var(--green-darkest);
+        margin-bottom: 8px;
+        font-size: 14px;
+    }
+    .form-group label .required {
+        color: var(--error);
+    }
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+        width: 100%;
+        padding: 10px 14px;
+        border: 1px solid var(--green-soft);
+        border-radius: 8px;
+        font-size: 14px;
+        font-family: inherit;
+        background: white;
+        transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus {
+        outline: none;
+        border-color: var(--green);
+        box-shadow: 0 0 0 3px rgba(67, 160, 71, 0.15);
+    }
+    .form-group textarea {
+        min-height: 100px;
+        resize: vertical;
+    }
+
+    /* Error styling */
+    .form-group input.is-invalid,
+    .form-group textarea.is-invalid {
+        border-color: var(--error);
+        background: var(--error-bg);
+    }
+    .error-message {
+        color: var(--error);
+        font-size: 13px;
+        margin-top: 6px;
+        display: block;
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 12px;
+        justify-content: flex-end;
+        margin-top: 25px;
+        padding-top: 20px;
+        border-top: 1px solid var(--green-light);
+    }
+    .btn {
+        padding: 10px 24px;
+        border: none;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: bold;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-block;
+        transition: all 0.2s;
+    }
+    .btn-primary {
+        background: var(--green-dark);
+        color: white;
+    }
+    .btn-primary:hover {
+        background: var(--green-darkest);
+    }
+    .btn-secondary {
+        background: #e0e0e0;
+        color: #333;
+    }
+    .btn-secondary:hover {
+        background: #bdbdbd;
+    }
+</style>
+
+<div class="card">
+    <div class="form-header">
+        <h2>Tambah Kursus Baru</h2>
+        <p>Isi formulir di bawah ini untuk menambahkan data program kursus baru ke sistem.</p>
     </div>
 
-    <form method="POST" action="{{ route('courses.store') }}" class="card shadow-sm">
+    <form action="{{ route('courses.store') }}" method="POST">
         @csrf
 
-        <div class="card-body">
-            {{-- Kode --}}
-            <div class="mb-3">
-                <label for="code" class="form-label">Kode Kursus</label>
-                <input type="text" id="code" name="code" 
-                       value="{{ old('code') }}" 
-                       class="form-control @error('code') is-invalid @enderror" required>
-                @error('code')
-                    <div class="invalid-feedback">{{ $message }}</div>
+        <div class="form-row">
+            <div class="form-group">
+                <label>Kode Kursus <span class="required">*</span></label>
+                <input 
+                    type="text" 
+                    name="kode" 
+                    value="{{ old('kode') }}" 
+                    class="@error('kode') is-invalid @enderror"
+                    placeholder="Contoh: WEB-02"
+                >
+                @error('kode')
+                    <span class="error-message">{{ $message }}</span>
                 @enderror
             </div>
 
-            {{-- Nama --}}
-            <div class="mb-3">
-                <label for="name" class="form-label">Nama Kursus</label>
-                <input type="text" id="name" name="name" 
-                       value="{{ old('name') }}" 
-                       class="form-control @error('name') is-invalid @enderror" required>
-                @error('name')
-                    <div class="invalid-feedback">{{ $message }}</div>
+            <div class="form-group">
+                <label>Nama Kursus <span class="required">*</span></label>
+                <input 
+                    type="text" 
+                    name="nama" 
+                    value="{{ old('nama') }}" 
+                    class="@error('nama') is-invalid @enderror"
+                    placeholder="Contoh: Web Dasar"
+                >
+                @error('nama')
+                    <span class="error-message">{{ $message }}</span>
                 @enderror
-            </div>
-
-            {{-- Deskripsi --}}
-            <div class="mb-3">
-                <label for="description" class="form-label">Deskripsi</label>
-                <textarea id="description" name="description" rows="4" 
-                          class="form-control @error('description') is-invalid @enderror">{{ old('description') }}</textarea>
-                @error('description')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
-            </div>
-
-            {{-- Fee & Quota --}}
-            <div class="row">
-                <div class="col-md-6 mb-3">
-                    <label for="fee" class="form-label">Biaya</label>
-                    <input type="number" id="fee" name="fee" min="0" 
-                           value="{{ old('fee') }}" 
-                           class="form-control @error('fee') is-invalid @enderror" required>
-                    @error('fee')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-                </div>
-
-                <div class="col-md-6 mb-3">
-                    <label for="quota" class="form-label">Kuota</label>
-                    <input type="number" id="quota" name="quota" min="1" max="500" 
-                           value="{{ old('quota') }}" 
-                           class="form-control @error('quota') is-invalid @enderror" required>
-                    @error('quota')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-                </div>
-            </div>
-
-            {{-- Tanggal & Status --}}
-            <div class="row">
-                <div class="col-md-6 mb-3">
-                    <label for="start_date" class="form-label">Tanggal Mulai</label>
-                    <input type="date" id="start_date" name="start_date" 
-                           value="{{ old('start_date') }}" 
-                           class="form-control @error('start_date') is-invalid @enderror" required>
-                    @error('start_date')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-                </div>
-
-                <div class="col-md-6 mb-3">
-                    <label for="status" class="form-label">Status</label>
-                    <select id="status" name="status" class="form-select @error('status') is-invalid @enderror" required>
-                        <option value="">Pilih Status</option>
-                        @foreach(['draft' => 'Draft', 'open' => 'Open', 'closed' => 'Closed'] as $value => $label)
-                            <option value="{{ $value }}" @selected(old('status') === $value)>
-                                {{ $label }}
-                            </option>
-                        @endforeach
-                    </select>
-                    @error('status')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-                </div>
             </div>
         </div>
 
-        <div class="card-footer d-flex justify-content-end gap-2">
-            <a href="{{ route('courses.index') }}" class="btn btn-outline-secondary">Batal</a>
-            <button type="submit" class="btn btn-primary">Simpan</button>
+        <div class="form-group">
+            <label>Deskripsi Kursus</label>
+            <textarea 
+                name="deskripsi" 
+                class="@error('deskripsi') is-invalid @enderror"
+                placeholder="Deskripsi singkat tentang kursus..."
+            >{{ old('deskripsi') }}</textarea>
+            @error('deskripsi')
+                <span class="error-message">{{ $message }}</span>
+            @enderror
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label>Biaya Kursus (Rp)</label>
+                <input 
+                    type="number" 
+                    name="harga" 
+                    value="{{ old('harga', 0) }}" 
+                    class="@error('harga') is-invalid @enderror"
+                    min="0"
+                >
+                @error('harga')
+                    <span class="error-message">{{ $message }}</span>
+                @enderror
+            </div>
+
+            <div class="form-group">
+                <label>Kuota Peserta</label>
+                <input 
+                    type="number" 
+                    name="kapasitas" 
+                    value="{{ old('kapasitas', 10) }}" 
+                    class="@error('kapasitas') is-invalid @enderror"
+                    min="1"
+                >
+                @error('kapasitas')
+                    <span class="error-message">{{ $message }}</span>
+                @enderror
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label>Tanggal Mulai</label>
+                <input 
+                    type="date" 
+                    name="tanggal" 
+                    value="{{ old('tanggal') }}" 
+                    class="@error('tanggal') is-invalid @enderror"
+                >
+                @error('tanggal')
+                    <span class="error-message">{{ $message }}</span>
+                @enderror
+            </div>
+
+            <div class="form-group">
+                <label>Status</label>
+                <select name="status" class="@error('status') is-invalid @enderror">
+                    <option value="draft" {{ old('status') == 'draft' ? 'selected' : '' }}>Draft</option>
+                    <option value="open" {{ old('status') == 'open' ? 'selected' : '' }}>Open</option>
+                </select>
+                @error('status')
+                    <span class="error-message">{{ $message }}</span>
+                @enderror
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <a href="{{ url('/courses') }}" class="btn btn-secondary">Batal</a>
+            <button type="submit" class="btn btn-primary">Simpan Kursus</button>
         </div>
     </form>
 </div>

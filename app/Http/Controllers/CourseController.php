@@ -1,43 +1,33 @@
-<?php
-
-namespace App\Http\Controllers;
-
-use Illuminate\Http\Request;
-
-class CourseController extends Controller
+public function edit(int $id)
 {
-    public function index()
-    {
-        return view('courses.index');
-    }
+    $course = Course::findOrFail($id);
+    return view('courses.edit', compact('course'));
+}
 
-    public function create()
-    {
-        //
-    }
+public function update(Request $request, int $id)
+{
+    $course = Course::findOrFail($id);
 
-    public function store(Request $request)
-    {
-        //
-    }
+    $validated = $request->validate([
+        'nama'      => 'required|string|max:255',
+        'deskripsi' => 'nullable|string|max:1000',
+        'harga'     => 'required|integer|min:0',
+        'kapasitas' => 'required|integer|min:1|max:500',
+        'tanggal'   => 'required|date',
+        'status'    => 'required|in:open,draft',
+    ], [
+        'nama.required'       => 'Nama kursus wajib diisi.',
+        'harga.required'      => 'Biaya kursus wajib diisi.',
+        'harga.min'           => 'Biaya kursus tidak boleh negatif.',
+        'kapasitas.required'  => 'Kuota peserta wajib diisi.',
+        'kapasitas.min'       => 'Kuota peserta minimal 1.',
+        'kapasitas.max'       => 'Kuota peserta harus berada di antara 1 sampai 500 kursi.',
+        'tanggal.required'    => 'Tanggal mulai wajib diisi.',
+        'status.required'     => 'Status kursus wajib diisi.',
+    ]);
 
-    public function show(string $id)
-    {
-        //
-    }
+    $course->update($validated);
 
-    public function edit(string $id)
-    {
-        //
-    }
-
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    public function destroy(string $id)
-    {
-        //
-    }
+    return redirect()->route('courses.show', $course->id)
+        ->with('success', 'Kursus berhasil diperbarui!');
 }

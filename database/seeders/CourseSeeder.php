@@ -2,98 +2,23 @@
 
 namespace Database\Seeders;
 
-use App\Models\Course;
 use Illuminate\Database\Seeder;
+use App\Models\Course;
 
 class CourseSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     * Minimal 8 data kursus contoh (contoh data praktikum Pertemuan 10).
-     */
     public function run(): void
     {
         $courses = [
-            [
-                'code' => 'WEB-01',
-                'name' => 'Web Dasar (HTML, CSS, JS)',
-                'description' => 'Mempelajari dasar perancangan antarmuka web responsif dengan HTML5 semantik, CSS3 Flexbox/Grid, dan dasar pemrograman JavaScript.',
-                'fee' => 150000,
-                'quota' => 25,
-                'start_date' => '2026-11-15',
-                'status' => 'open',
-            ],
-            [
-                'code' => 'PHP-01',
-                'name' => 'Pemrograman PHP Dasar',
-                'description' => 'Mengenal sintaks dasar PHP, manipulasi string & array, percabangan, perulangan, pemrosesan form, dan dasar Object-Oriented Programming (OOP).',
-                'fee' => 200000,
-                'quota' => 20,
-                'start_date' => '2026-11-20',
-                'status' => 'open',
-            ],
-            [
-                'code' => 'LAR-01',
-                'name' => 'Mastering Laravel MVC',
-                'description' => 'Membangun aplikasi web tangguh dengan arsitektur Model-View-Controller, routing RESTful, Blade templating, migrasi skema, dan Eloquent ORM.',
-                'fee' => 350000,
-                'quota' => 15,
-                'start_date' => '2026-11-25',
-                'status' => 'open',
-            ],
-            [
-                'code' => 'DB-01',
-                'name' => 'Desain Database & SQL Relasional',
-                'description' => 'Perancangan diagram ERD, normalisasi skema 1NF sampai 3NF, optimasi indeks, serta teknik query SQL relasional (MySQL / MariaDB).',
-                'fee' => 250000,
-                'quota' => 20,
-                'start_date' => '2026-12-01',
-                'status' => 'open',
-            ],
-            [
-                'code' => 'API-01',
-                'name' => 'RESTful API Development',
-                'description' => 'Arsitektur pembuatan Web Service berbasis JSON, autentikasi stateless, manajemen status kode HTTP, dan pengujian endpoint menggunakan Postman.',
-                'fee' => 300000,
-                'quota' => 15,
-                'start_date' => '2026-12-05',
-                'status' => 'draft',
-            ],
-            [
-                'code' => 'JS-02',
-                'name' => 'Modern JavaScript & DOM Scripting',
-                'description' => 'Pendalaman fitur ECMAScript terkini (ES6+), async/await, Fetch API, manipulasi interaktif Document Object Model, serta jQuery.',
-                'fee' => 200000,
-                'quota' => 25,
-                'start_date' => '2026-12-10',
-                'status' => 'draft',
-            ],
-            [
-                'code' => 'GIT-01',
-                'name' => 'Version Control dengan Git & GitHub',
-                'description' => 'Penguasaan alur kerja Git, staging area, branching, merging, conflict resolution, standar commit message, serta kolaborasi tim via GitHub.',
-                'fee' => 0,
-                'quota' => 30,
-                'start_date' => '2026-12-12',
-                'status' => 'open',
-            ],
-            [
-                'code' => 'SEC-01',
-                'name' => 'Keamanan Web & Best Practice Dev',
-                'description' => 'Identifikasi dan mitigasi kerentanan keamanan web OWASP Top 10, perlindungan dari SQL Injection, XSS, CSRF, serta sanitasi input formulir.',
-                'fee' => 400000,
-                'quota' => 10,
-                'start_date' => '2026-12-15',
-                'status' => 'closed',
-            ],
+            ['kode'=>'WEB-01','nama'=>'Web Dasar (HTML, CSS, JS)','deskripsi'=>'Mempelajari dasar perancangan antarmuka web responsif.','harga'=>150000,'kapasitas'=>25,'tanggal'=>'2026-11-15','status'=>'open'],
+            ['kode'=>'PHP-01','nama'=>'Pemrograman PHP Dasar','deskripsi'=>'Mengenal sintaks dasar PHP, manipulasi string & array, percabangan, perulangan, dan dasar OOP.','harga'=>200000,'kapasitas'=>20,'tanggal'=>'2026-11-20','status'=>'open'],
+            ['kode'=>'LAR-01','nama'=>'Mastering Laravel MVC','deskripsi'=>'Membangun aplikasi web tangguh dengan arsitektur MVC, routing RESTful, Blade templating, dan Eloquent ORM.','harga'=>350000,'kapasitas'=>15,'tanggal'=>'2026-11-25','status'=>'open'],
+            ['kode'=>'DB-01','nama'=>'Desain Database & SQL Relasional','deskripsi'=>'Perancangan diagram ERD, normalisasi schema 1NF sampai 3NF, optimasi indeks, dan query SQL relasional.','harga'=>250000,'kapasitas'=>20,'tanggal'=>'2026-12-01','status'=>'open'],
+            ['kode'=>'API-01','nama'=>'RESTful API Development','deskripsi'=>'Arsitektur Web Service berbasis JSON, autentikasi stateless, dan pengujian endpoint menggunakan Postman.','harga'=>300000,'kapasitas'=>15,'tanggal'=>'2026-12-05','status'=>'draft'],
         ];
 
-        foreach ($courses as $course) {
-            Course::updateOrCreate(
-                ['code' => $course['code']],
-                $course
-            );
+        foreach ($courses as $c) {
+            Course::create($c);
         }
     }
 }
-
