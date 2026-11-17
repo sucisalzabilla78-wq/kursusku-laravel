@@ -1,0 +1,17 @@
+# Log Penggunaan AI - Praktikum Pertemuan 11
+
+Nama: [Nama Kamu] | NIM: [NIM Kamu] | [Kelas] | Pemrograman Web III
+Proyek: KursusKu (Django) | Alat AI: Qwen (Alibaba)
+
+| No. | Prompt / pertanyaan | Saran AI | Dipakai? | Alasan |
+|-----|---------------------|----------|----------|--------|
+| 1 | Cara setup project Django untuk kursus | Install Django, buat project, buat app courses, konfigurasi settings.py | Ya | Langkah dasar sesuai panduan |
+| 2 | Membuat model Course dengan field title, description, quota | Definisikan class Course(models.Model) dengan CharField, TextField, IntegerField | Ya | Struktur data sesuai kebutuhan |
+| 3 | Cara membuat view untuk daftar courses | Gunakan ListView atau function-based view dengan Course.objects.all() | Ya | Menampilkan semua course |
+| 4 | Template courses.html tidak menampilkan data | Pastikan view passing context {'courses': courses} dan loop {% for course in courses %} | Ya | Fix bug rendering |
+| 5 | CSS tidak ter-load di template | Tambahkan {% load static %} dan {% static 'css/style.css' %}, cek STATIC_URL di settings.py | Ya | Fix styling hilang |
+| 6 | Membuat form pendaftaran course | Gunakan ModelForm atau form manual dengan method POST dan {% csrf_token %} | Ya | Fitur pendaftaran |
+| 7 | Validasi quota course sebelum pendaftaran | Cek if course.quota > 0 sebelum simpan pendaftaran, tampilkan error jika penuh | Ya | Validasi bisnis logic |
+| 8 | Cara membuat URL routing untuk courses | Tambahkan path('courses/', views.courses, name='courses') di urls.py | Ya | Routing halaman |
+| 9 | Menambahkan navigasi Beranda dan Pendaftaran di base template | Buat navbar dengan link {% url 'home' %} dan {% url 'pendaftaran' %} | Ya | UI navigation |
+| 10 | Debug error 404 pada static files | Jalankan python manage.py collectstatic, cek DEBUG = True di settings.py | Ya | Fix static files |
