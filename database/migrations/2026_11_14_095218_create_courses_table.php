@@ -10,13 +10,12 @@ return new class extends Migration
     {
         Schema::create('courses', function (Blueprint $table) {
             $table->id();
-            $table->string('kode');          // WEB-01, PHP-01, dst
-            $table->string('nama');
-            $table->text('deskripsi')->nullable();
-            $table->integer('harga');
-            $table->integer('kapasitas');
-            $table->date('tanggal');
-            $table->string('status')->default('draft'); // open / draft
+            $table->string('title');
+            $table->text('description')->nullable();
+            $table->string('instructor');
+            $table->decimal('price', 10, 2)->default(0);
+            $table->integer('duration_hours')->default(0);
+            $table->timestamps();
         });
     }
 

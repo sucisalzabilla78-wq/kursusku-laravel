@@ -2,23 +2,84 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\Course;
+use App\Models\Participant;
+use App\Models\Enrollment;
+use Illuminate\Database\Seeder;
 
 class CourseSeeder extends Seeder
 {
     public function run(): void
     {
-        $courses = [
-            ['kode'=>'WEB-01','nama'=>'Web Dasar (HTML, CSS, JS)','deskripsi'=>'Mempelajari dasar perancangan antarmuka web responsif.','harga'=>150000,'kapasitas'=>25,'tanggal'=>'2026-11-15','status'=>'open'],
-            ['kode'=>'PHP-01','nama'=>'Pemrograman PHP Dasar','deskripsi'=>'Mengenal sintaks dasar PHP, manipulasi string & array, percabangan, perulangan, dan dasar OOP.','harga'=>200000,'kapasitas'=>20,'tanggal'=>'2026-11-20','status'=>'open'],
-            ['kode'=>'LAR-01','nama'=>'Mastering Laravel MVC','deskripsi'=>'Membangun aplikasi web tangguh dengan arsitektur MVC, routing RESTful, Blade templating, dan Eloquent ORM.','harga'=>350000,'kapasitas'=>15,'tanggal'=>'2026-11-25','status'=>'open'],
-            ['kode'=>'DB-01','nama'=>'Desain Database & SQL Relasional','deskripsi'=>'Perancangan diagram ERD, normalisasi schema 1NF sampai 3NF, optimasi indeks, dan query SQL relasional.','harga'=>250000,'kapasitas'=>20,'tanggal'=>'2026-12-01','status'=>'open'],
-            ['kode'=>'API-01','nama'=>'RESTful API Development','deskripsi'=>'Arsitektur Web Service berbasis JSON, autentikasi stateless, dan pengujian endpoint menggunakan Postman.','harga'=>300000,'kapasitas'=>15,'tanggal'=>'2026-12-05','status'=>'draft'],
-        ];
+        // Courses
+        $webDasar = Course::create([
+            'title' => 'Web Dasar',
+            'description' => 'Belajar HTML, CSS, dan JavaScript dasar',
+            'instructor' => 'Budi Santoso',
+            'price' => 300000,
+            'duration_hours' => 15,
+        ]);
 
-        foreach ($courses as $c) {
-            Course::create($c);
-        }
+        $laravelDasar = Course::create([
+            'title' => 'Laravel Dasar',
+            'description' => 'Belajar Laravel dari nol',
+            'instructor' => 'Siti Aminah',
+            'price' => 500000,
+            'duration_hours' => 20,
+        ]);
+
+        $phpFundamental = Course::create([
+            'title' => 'PHP Fundamental',
+            'description' => 'Dasar-dasar pemrograman PHP',
+            'instructor' => 'Andi Pratama',
+            'price' => 400000,
+            'duration_hours' => 18,
+        ]);
+
+        // Participants
+        $alya = Participant::create([
+            'name' => 'Alya Rahma',
+            'email' => 'alya@email.com',
+            'phone' => '081234567890',
+        ]);
+
+        $bima = Participant::create([
+            'name' => 'Bima Putra',
+            'email' => 'bima@email.com',
+            'phone' => '081234567891',
+        ]);
+
+        // Enrollments (sesuai gambar)
+        Enrollment::create([
+            'participant_id' => $alya->id,
+            'course_id' => $webDasar->id,
+            'status' => 'registered',
+            'created_at' => '2026-11-09',
+            'updated_at' => '2026-11-09',
+        ]);
+
+        Enrollment::create([
+            'participant_id' => $bima->id,
+            'course_id' => $laravelDasar->id,
+            'status' => 'registered',
+            'created_at' => '2026-11-23',
+            'updated_at' => '2026-11-23',
+        ]);
+
+        Enrollment::create([
+            'participant_id' => $alya->id,
+            'course_id' => $phpFundamental->id,
+            'status' => 'registered',
+            'created_at' => '2026-11-16',
+            'updated_at' => '2026-11-16',
+        ]);
+
+        Enrollment::create([
+            'participant_id' => $alya->id,
+            'course_id' => $laravelDasar->id,
+            'status' => 'registered',
+            'created_at' => '2026-11-23',
+            'updated_at' => '2026-11-23',
+        ]);
     }
 }

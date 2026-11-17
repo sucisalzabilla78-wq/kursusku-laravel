@@ -1,14 +1,13 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\CourseController;
+use App\Http\Controllers\EnrollmentController;
 
-Route::get('/', fn() => redirect('/courses'));
-
+Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/courses', [CourseController::class, 'index'])->name('courses.index');
-Route::get('/courses/create', [CourseController::class, 'create'])->name('courses.create');
-Route::post('/courses', [CourseController::class, 'store'])->name('courses.store');
-Route::get('/courses/{id}', [CourseController::class, 'show'])->name('courses.show');
-Route::get('/courses/{id}/edit', [CourseController::class, 'edit'])->name('courses.edit');
-Route::put('/courses/{id}', [CourseController::class, 'update'])->name('courses.update');
-Route::delete('/courses/{id}', [CourseController::class, 'destroy'])->name('courses.destroy');
+Route::get('/courses/{course}', [CourseController::class, 'show'])->name('courses.show');
+Route::get('/enrollments', [EnrollmentController::class, 'index'])->name('enrollment.index');
+Route::get('/enrollments/create', [EnrollmentController::class, 'create'])->name('enrollment.create');
+Route::post('/enrollments', [EnrollmentController::class, 'store'])->name('enrollment.store');

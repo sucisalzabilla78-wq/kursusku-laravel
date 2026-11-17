@@ -3,20 +3,27 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Course extends Model
 {
-    // Kolom ini HARUS sama persis dengan yang ada di migration
     protected $fillable = [
-        'kode', 
-        'nama', 
-        'deskripsi', 
-        'harga', 
-        'kapasitas', 
-        'tanggal', 
-        'status'
+        'title',
+        'description',
+        'instructor',
+        'price',
+        'duration_hours',
     ];
 
-    // Tambahkan baris ini karena di migration Anda tidak ada $table->timestamps()
-    public $timestamps = false; 
+    public function enrollments(): HasMany
+    {
+        return $this->hasMany(Enrollment::class);
+    }
+
+    public function participants(): BelongsToMany
+    {
+        return $this->belongsToMany(Participant::class, 'enrollments')
+            ->withPivot('status')->withTimestamps();
+    }
 }

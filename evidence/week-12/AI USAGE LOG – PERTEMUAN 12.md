@@ -1,0 +1,12 @@
+# AI USAGE LOG – PERTEMUAN 12
+
+Dokumen ini berisi catatan penggunaan AI selama pelaksanaan Praktikum Pemrograman Web III Pertemuan 12 dengan materi Relasi Database pada proyek KursusKu.
+
+| Prompt / Pertanyaan | Saran AI | Dipakai? | Alasan |
+|---|---|---|---|
+| Bagaimana mengatasi error `The term 'php' is not recognized` di PowerShell VS Code? | AI menyarankan menggunakan terminal **Cmder** bawaan Laragon, atau menambahkan path PHP secara manual: `export PATH="/c/laragon/bin/php/php-8.3.33-Win32-vs16-x64:$PATH"` di Git Bash. | **Ya** | Karena PowerShell tidak mengenali perintah `php`, sedangkan Cmder sudah memiliki PHP di PATH secara default. |
+| Bagaimana memperbaiki error `Unknown column 'enrolled_at' in 'field list'` saat seeding? | AI menyarankan menghapus baris `'enrolled_at' => now()` dari `CourseSeeder.php` karena kolom tersebut tidak ada di migration `enrollments`. | **Ya** | Agar seeder sesuai dengan struktur tabel yang sebenarnya, sehingga `php artisan migrate:fresh --seed` berhasil. |
+| Mengapa muncul error `Class "Participant" not found` di `php artisan tinker`? | AI menyarankan menggunakan **full namespace** `\App\Models\Participant::first()` atau keluar tinker (`exit`) lalu masuk ulang agar class ter-load dengan benar. | **Ya** | Karena tinker session sebelumnya sudah "rusak" akibat perintah `use` yang digabung dengan statement lain dalam satu baris. |
+| Bagaimana mengatasi `UniqueConstraintViolationException: Duplicate entry '2-2'` saat membuat enrollment? | AI menyarankan menghapus enrollment yang sudah ada terlebih dahulu dengan `\App\Models\Enrollment::where('participant_id', 2)->where('course_id', 2)->delete();` sebelum membuat yang baru. | **Ya** | Karena tabel `enrollments` memiliki unique constraint pada kombinasi `participant_id` + `course_id`, sehingga duplikat tidak diperbolehkan. |
+| Bagaimana membuat tabel `enrollments` dengan foreign key dan cascade delete seperti referensi? | AI memberikan kode migration menggunakan `$table->foreignId('participant_id')->constrained('participants')->onDelete('cascade');` dan `$table->unique(['participant_id', 'course_id']);`. | **Ya** | Agar struktur tabel persis seperti referensi GitHub, dengan CASCADE DELETE yang memastikan data terkait ikut terhapus saat parent dihapus. |
+| Bagaimana membuktikan cascade delete bekerja pada Course dan Participant? | AI memberikan 7 perintah tinker berurutan: buat enrollment → hitung

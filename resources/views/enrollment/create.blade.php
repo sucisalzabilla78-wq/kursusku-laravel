@@ -1,237 +1,68 @@
-@extends('layouts.app')
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tambah Enrollment - KursusKu</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', sans-serif; background: #d4edda; min-height: 100vh; }
+        .navbar { background: #2d3436; color: #fff; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; }
+        .navbar .brand { font-size: 22px; font-weight: bold; color: #fff; text-decoration: none; }
+        .navbar .nav-links { display: flex; gap: 20px; }
+        .navbar .nav-links a { color: #dfe6e9; text-decoration: none; font-size: 14px; }
+        .navbar .nav-links a:hover { color: #fff; }
+        .container { max-width: 700px; margin: 40px auto; padding: 0 20px; }
+        h2 { color: #2d3436; margin-bottom: 20px; font-size: 22px; }
+        .card { background: #fff; border-radius: 8px; padding: 25px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); }
+        .form-group { margin-bottom: 18px; }
+        .form-group label { display: block; margin-bottom: 6px; font-weight: 600; color: #2d3436; font-size: 14px; }
+        .form-group select { width: 100%; padding: 10px 12px; border: 1px solid #dfe6e9; border-radius: 5px; font-size: 14px; color: #636e72; background: #fff; }
+        .form-group select:focus { outline: none; border-color: #00b894; }
+        .btn-submit { width: 100%; padding: 12px; background: #00897b; color: #fff; border: none; border-radius: 5px; font-size: 15px; font-weight: 600; cursor: pointer; }
+        .btn-submit:hover { background: #00695c; }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="{{ url('/') }}" class="brand">KursusKu</a>
+        <div class="nav-links">
+            <a href="{{ url('/') }}">Beranda</a>
+            <a href="{{ route('courses.index') }}">Daftar Kursus</a>
+            <a href="{{ route('enrollments.index') }}">Pendaftaran</a>
+        </div>
+    </nav>
 
-@section('title', 'Pendaftaran Kursus - KursusKu')
+    <div class="container">
+        <h2>Tambah Enrollment (Admin)</h2>
 
-@section('content')
-<div class="container py-5">
-    <div class="row justify-content-center">
-        <div class="col-lg-8 col-md-10">
+        <div class="card">
+            <form action="{{ route('enrollments.store') }}" method="POST">
+                @csrf
 
-            {{-- Header Form --}}
-            <div class="text-center mb-4">
-                <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-3 py-2 rounded-pill fw-semibold mb-2">
-                    Formulir Pendaftaran Siswa Baru
-                </span>
-                <h1 class="h2 fw-bold text-dark mt-2">Mulai Langkah Belajarmu</h1>
-                <p class="text-muted">
-                    Pilih kursus yang sesuai dengan kebutuhan pengembangan skill pemrogramanmu.
-                </p>
-            </div>
-
-            {{-- Alert Error Validasi Global --}}
-            @if ($errors->any())
-                <div class="alert alert-danger alert-dismissible fade show shadow-sm mb-4" role="alert">
-                    <div class="d-flex align-items-center gap-2">
-                        <strong>Perhatian:</strong> Terdapat data yang belum sesuai validasi:
-                    </div>
-                    <ul class="mb-0 mt-2 ps-3">
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
+                <div class="form-group">
+                    <label for="participant_id">Participant</label>
+                    <select name="participant_id" id="participant_id" required>
+                        <option value="">-- Pilih Participant --</option>
+                        @foreach($participants as $p)
+                            <option value="{{ $p->id }}">{{ $p->name }}</option>
                         @endforeach
-                    </ul>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </select>
                 </div>
-            @endif
 
-            {{-- Card Formulir --}}
-            <div class="card card-kursusku shadow-sm bg-white border-0">
-                <div class="card-body p-4 p-md-5">
-                    <form action="{{ route('enrollment.preview') }}" method="POST" id="enrollmentForm" novalidate>
-                        @csrf
-
-                        {{-- Input Nama Lengkap --}}
-                        <div class="mb-4">
-                            <label for="nama" class="form-label fw-semibold text-secondary">
-                                Nama Lengkap <span class="text-danger">*</span>
-                            </label>
-                            <input 
-                                type="text" 
-                                class="form-control form-control-lg @error('nama') is-invalid @enderror" 
-                                id="nama" 
-                                name="nama" 
-                                value="{{ old('nama') }}" 
-                                placeholder="Contoh: Suci Salzabilla" 
-                                required
-                            >
-                            @error('nama')
-                                <div class="invalid-feedback">
-                                    {{ $message }}
-                                </div>
-                            @enderror
-                            <div class="form-text text-muted">
-                                Masukkan nama lengkap untuk keperluan sertifikat kursus.
-                            </div>
-                        </div>
-
-                        {{-- Input Email --}}
-                        <div class="mb-4">
-                            <label for="email" class="form-label fw-semibold text-secondary">
-                                Alamat Email <span class="text-danger">*</span>
-                            </label>
-                            <input 
-                                type="email" 
-                                class="form-control form-control-lg @error('email') is-invalid @enderror" 
-                                id="email" 
-                                name="email" 
-                                value="{{ old('email') }}" 
-                                placeholder="Contoh: nama@domain.com" 
-                                required
-                            >
-                            @error('email')
-                                <div class="invalid-feedback">
-                                    {{ $message }}
-                                </div>
-                            @enderror
-                            <div class="form-text text-muted">
-                                Konfirmasi dan materi pembelajaran akan dikirimkan ke email ini.
-                            </div>
-                        </div>
-
-                        {{-- Select Pilihan Kursus --}}
-                        <div class="mb-4">
-                            <label for="course_id" class="form-label fw-semibold text-secondary">
-                                Pilihan Kursus <span class="text-danger">*</span>
-                            </label>
-                            <select 
-                                class="form-select form-select-lg @error('course_id') is-invalid @enderror" 
-                                id="course_id" 
-                                name="course_id" 
-                                required
-                            >
-                                <option value="" selected>-- Pilih Kursus yang Diinginkan --</option>
-                                @foreach ($courses as $id => $course)
-                                    <option value="{{ $id }}" {{ old('course_id') == $id ? 'selected' : '' }}>
-                                        {{ $course['name'] }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            @error('course_id')
-                                <div class="invalid-feedback">
-                                    {{ $message }}
-                                </div>
-                            @enderror
-                        </div>
-
-                        {{-- Area Dinamis Sisa Kursi via Ajax (Tanpa Reload) --}}
-                        <div id="seat-availability-wrapper" class="mb-4 d-none">
-                            <div id="seat-availability-box" class="p-3 rounded-3 border d-flex align-items-center gap-3">
-                                {{-- Spinner Loading --}}
-                                <div id="seat-loading-spinner" class="spinner-border spinner-border-sm text-primary d-none" role="status">
-                                    <span class="visually-hidden">Memeriksa kuota...</span>
-                                </div>
-                                
-                                {{-- Pesan Status Kursi --}}
-                                <div id="seat-availability-message" class="fw-semibold">
-                                    Memeriksa ketersediaan kursi...
-                                </div>
-                            </div>
-                        </div>
-
-                        {{-- Tombol Aksi --}}
-                        <div class="d-grid gap-2 pt-2">
-                            <button type="submit" class="btn btn-kursusku btn-lg fw-semibold shadow-sm py-3">
-                                Lanjutkan ke Preview Pendaftaran &rarr;
-                            </button>
-                            <a href="{{ route('home') }}" class="btn btn-outline-secondary btn-lg py-2 mt-2">
-                                Batal dan Kembali ke Beranda
-                            </a>
-                        </div>
-                    </form>
+                <div class="form-group">
+                    <label for="course_id">Course</label>
+                    <select name="course_id" id="course_id" required>
+                        <option value="">-- Pilih Course --</option>
+                        @foreach($courses as $c)
+                            <option value="{{ $c->id }}">{{ $c->nama }} ({{ $c->kode }})</option>
+                        @endforeach
+                    </select>
                 </div>
-            </div>
 
-            {{-- Ringkasan Praktikum --}}
-            <div class="mt-4 p-3 rounded-3 bg-white border text-center text-muted small">
-                <strong>Catatan Praktikum Pertemuan 9:</strong> Pengecekan sisa kursi menggunakan <code>jQuery Ajax</code> secara asinkron tanpa reload halaman.
-            </div>
-
+                <button type="submit" class="btn-submit">Simpan Enrollment</button>
+            </form>
         </div>
     </div>
-</div>
-@endsection
-
-@push('scripts')
-<script>
-    $(document).ready(function() {
-        const $courseSelect = $('#course_id');
-        const $seatWrapper = $('#seat-availability-wrapper');
-        const $seatBox = $('#seat-availability-box');
-        const $seatSpinner = $('#seat-loading-spinner');
-        const $seatMessage = $('#seat-availability-message');
-
-        /**
-         * Fungsi untuk memuat ketersediaan kursi menggunakan jQuery Ajax
-         */
-        function fetchCourseAvailability(courseId) {
-            if (!courseId) {
-                $seatWrapper.addClass('d-none');
-                return;
-            }
-
-            // Tampilkan wrapper dan state loading
-            $seatWrapper.removeClass('d-none');
-            $seatSpinner.removeClass('d-none');
-            $seatBox.removeClass('bg-success-subtle border-success text-success bg-danger-subtle border-danger text-danger bg-warning-subtle border-warning text-warning')
-                    .addClass('bg-light border-secondary text-secondary');
-            $seatMessage.text('Memeriksa ketersediaan kursi via Ajax...');
-
-            // Request Ajax GET ke endpoint ketersediaan
-            $.ajax({
-                url: "{{ route('courses.availability') }}",
-                type: 'GET',
-                data: {
-                    course_id: courseId
-                },
-                dataType: 'json',
-                success: function(response) {
-                    $seatSpinner.addClass('d-none');
-
-                    if (response.success) {
-                        // Tampilan berhasil
-                        $seatBox.removeClass('bg-light border-secondary text-secondary')
-                                .addClass('bg-success-subtle border-success text-success');
-                        
-                        $seatMessage.html(
-                            `<strong>${response.course_name}</strong>: Tersedia <strong>${response.seats} kursi</strong>.`
-                        );
-                    } else {
-                        // Respon tidak berhasil
-                        $seatBox.removeClass('bg-light border-secondary text-secondary')
-                                .addClass('bg-warning-subtle border-warning text-warning');
-                        $seatMessage.text(response.message || 'Ketersediaan kursus tidak ditemukan.');
-                    }
-                },
-                error: function(xhr, status, error) {
-                    $seatSpinner.addClass('d-none');
-                    // Tampilan error handling
-                    $seatBox.removeClass('bg-light border-secondary text-secondary bg-success-subtle')
-                            .addClass('bg-danger-subtle border-danger text-danger');
-                    
-                    $seatMessage.html(
-                        '<strong>Gagal memeriksa ketersediaan:</strong> Terjadi kendala saat memuat data dari server.'
-                    );
-                    
-                    console.error('Ajax Availability Error Details:', {
-                        status: status,
-                        error: error,
-                        statusCode: xhr.status,
-                        responseText: xhr.responseText
-                    });
-                }
-            });
-        }
-
-        // Listener event change pada select kursus
-        $courseSelect.on('change', function() {
-            const selectedCourseId = $(this).val();
-            fetchCourseAvailability(selectedCourseId);
-        });
-
-        // Trigger otomatis jika sudah ada nilai sebelumnya (misal setelah validasi submit gagal)
-        if ($courseSelect.val()) {
-            fetchCourseAvailability($courseSelect.val());
-        }
-    });
-</script>
-@endpush
-
+</body>
+</html>
