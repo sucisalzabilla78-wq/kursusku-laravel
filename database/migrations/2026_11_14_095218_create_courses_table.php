@@ -10,10 +10,14 @@ return new class extends Migration
     {
         Schema::create('courses', function (Blueprint $table) {
             $table->id();
+            $table->string('code', 20)->unique();
             $table->string('title');
             $table->text('description')->nullable();
             $table->string('instructor');
             $table->decimal('price', 10, 2)->default(0);
+            $table->integer('quota')->default(25);
+            $table->date('start_date')->nullable();
+            $table->enum('status', ['Open', 'Closed', 'Full', 'Draft'])->default('Open');
             $table->integer('duration_hours')->default(0);
             $table->timestamps();
         });
