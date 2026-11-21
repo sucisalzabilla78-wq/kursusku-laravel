@@ -7,15 +7,27 @@ use Illuminate\Http\Request;
 
 class CourseController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $courses = Course::all();
-        return view('courses.index', compact('courses'));
-    }
+        $search = trim((string) $request->query('q'));
+        $status = trim((string) $request->query('status'));
+        $allowedStatuses = ['open', 'closed', 'draft'];
 
-    public function show(Course $course)
-    {
-        return view('courses.show', compact('course'));
+        $courses = Course::query()
+            ->when($search !== '', function ($query) use ($search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('code', 'like', "%{$search}%")
+                      ->orWhere('title', 'like', "%{$search}%");
+                });
+            })
+            ->when(in_array($status, $allowedStatuses, true), function ($query) use ($status) {
+                $query->where('status', $status);
+            })
+            ->orderBy('title')
+            ->paginate(10)
+            ->withQueryString();
+
+        return view('courses.index', compact('courses', 'search', 'status'));
     }
 
     public function create()
@@ -26,20 +38,20 @@ class CourseController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'code' => 'required|string|max:20|unique:courses,code',
-            'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'instructor' => 'required|string|max:255',
-            'price' => 'required|numeric|min:0',
-            'quota' => 'required|integer|min:1',
-            'start_date' => 'nullable|date',
-            'status' => 'required|in:Open,Closed,Full,Draft',
+            'code' => 'required|unique:courses,code',
+            'title' => 'required',
+            'price' => 'required|numeric',
+            'status' => 'required|in:open,closed,draft',
         ]);
 
         Course::create($request->all());
 
-        return redirect()->route('courses.index')
-            ->with('success', 'Kursus berhasil ditambahkan.');
+        return redirect()->route('courses.index')->with('success', 'Kursus berhasil ditambahkan.');
+    }
+
+    public function show(Course $course)
+    {
+        return view('courses.show', compact('course'));
     }
 
     public function edit(Course $course)
@@ -50,26 +62,21 @@ class CourseController extends Controller
     public function update(Request $request, Course $course)
     {
         $request->validate([
-            'code' => 'required|string|max:20|unique:courses,code,' . $course->id,
-            'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'instructor' => 'required|string|max:255',
-            'price' => 'required|numeric|min:0',
-            'quota' => 'required|integer|min:1',
-            'start_date' => 'nullable|date',
-            'status' => 'required|in:Open,Closed,Full,Draft',
+            'code' => 'required|unique:courses,code,' . $course->id,
+            'title' => 'required',
+            'price' => 'required|numeric',
+            'status' => 'required|in:open,closed,draft',
         ]);
 
         $course->update($request->all());
 
-        return redirect()->route('courses.show', $course->id)
-            ->with('success', 'Kursus berhasil diperbarui.');
+        return redirect()->route('courses.index')->with('success', 'Kursus berhasil diupdate.');
     }
 
     public function destroy(Course $course)
     {
         $course->delete();
-        return redirect()->route('courses.index')
-            ->with('success', 'Kursus berhasil dihapus.');
+
+        return redirect()->route('courses.index')->with('success', 'Kursus berhasil dihapus.');
     }
 }

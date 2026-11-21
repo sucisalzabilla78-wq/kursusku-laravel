@@ -1,103 +1,114 @@
-@extends('layouts.app')
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daftar Kursus - KursusKu</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Warna Hijau */
+        .bg-hijau { background-color: #28a745 !important; }
+        .btn-hijau { background-color: #28a745; color: white; border: none; }
+        .btn-hijau:hover { background-color: #218838; color: white; }
+        .text-hijau { color: #28a745; }
+        .table-header-hijau { background-color: #28a745 !important; color: white !important; }
+    </style>
+</head>
+<body class="bg-light">
 
-@section('title', 'Daftar Kursus - KursusKu')
+    <!-- Navbar Hijau -->
+    <nav class="navbar navbar-dark bg-hijau">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="#">KursusKu</a>
+            <div class="d-flex">
+                <a href="{{ url('/') }}" class="nav-link text-white me-3">Beranda</a>
+                <a href="#" class="nav-link text-white">Pendaftaran</a>
+            </div>
+        </div>
+    </nav>
 
-@section('content')
-<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-    <div>
-        <h1 style="font-size: 24px; color: #263238; margin-bottom: 5px;">Daftar Kursus</h1>
-        <p style="color: #78909c; font-size: 14px;">Data diambil dari MySQL melalui Eloquent.</p>
+    <div class="container mt-4">
+        <!-- Judul dan Tombol Tambah -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="fw-bold text-hijau">Daftar Kursus</h2>
+            <a href="{{ route('courses.create') }}" class="btn btn-hijau">+ Tambah Kursus</a>
+        </div>
+
+        <!-- Form Pencarian dan Filter -->
+        <form method="GET" action="{{ route('courses.index') }}" class="row g-2 mb-4">
+            <div class="col-md-6">
+                <input type="search" name="q" value="{{ $search }}" class="form-control" placeholder="Cari kode atau nama kursus">
+            </div>
+            <div class="col-md-3">
+                <select name="status" class="form-select">
+                    <option value="">Semua status</option>
+                    <option value="open" @selected($status === 'open')>Open</option>
+                    <option value="closed" @selected($status === 'closed')>Closed</option>
+                    <option value="draft" @selected($status === 'draft')>Draft</option>
+                </select>
+            </div>
+            <div class="col-md-3 d-flex gap-2">
+                <button type="submit" class="btn btn-hijau flex-fill">Cari</button>
+                <a href="{{ route('courses.index') }}" class="btn btn-outline-secondary">Reset</a>
+            </div>
+        </form>
+
+        <!-- Tabel Data Kursus -->
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover bg-white">
+                <thead class="table-header-hijau">
+                    <tr>
+                        <th style="width: 5%;">No</th>
+                        <th style="width: 15%;">Kode</th>
+                        <th style="width: 30%;">Nama Kursus</th>
+                        <th style="width: 15%;">Fee</th>
+                        <th style="width: 15%;">Status</th>
+                        <th style="width: 20%;" class="text-center">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse($courses as $index => $course)
+                        <tr>
+                            <td>{{ $courses->firstItem() + $index }}</td>
+                            <td class="fw-bold">{{ $course->code }}</td>
+                            <td>{{ $course->title }}</td>
+                            <td>Rp {{ number_format($course->price, 0, ',', '.') }}</td>
+                            <td>
+                                @if($course->status == 'open')
+                                    <span class="badge bg-success">Open</span>
+                                @elseif($course->status == 'closed')
+                                    <span class="badge bg-danger">Closed</span>
+                                @else
+                                    <span class="badge bg-warning text-dark">Draft</span>
+                                @endif
+                            </td>
+                            <td class="text-center">
+                                <a href="{{ route('courses.show', $course->id) }}" class="btn btn-sm btn-info text-white">Detail</a>
+                                <a href="{{ route('courses.edit', $course->id) }}" class="btn btn-sm btn-warning text-white">Edit</a>
+                                <form action="{{ route('courses.destroy', $course->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Yakin ingin menghapus?')">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-sm btn-danger">Hapus</button>
+                                </form>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="6" class="text-center text-muted py-4">
+                                Tidak ada kursus yang sesuai dengan pencarian atau filter.
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination -->
+        <div class="mt-3">
+            {{ $courses->links() }}
+        </div>
     </div>
-    <a href="{{ route('courses.create') }}" class="btn btn-primary">+ Tambah Kursus</a>
-</div>
 
-<div class="table-card">
-    <table>
-        <thead>
-            <tr>
-                <th>Kode</th>
-                <th>Nama</th>
-                <th>Biaya</th>
-                <th>Kuota</th>
-                <th>Mulai</th>
-                <th>Status</th>
-                <th>Aksi</th>
-            </tr>
-        </thead>
-        <tbody>
-            @forelse($courses as $course)
-            <tr>
-                <td>{{ $course->code }}</td>
-                <td>{{ $course->title }}</td>
-                <td>Rp {{ number_format($course->price, 0, ',', '.') }}</td>
-                <td>{{ $course->quota }}</td>
-                <td>{{ $course->start_date ? $course->start_date->format('d/m/Y') : '-' }}</td>
-                <td>
-                    <span class="badge {{ strtolower($course->status) }}">{{ $course->status }}</span>
-                </td>
-                <td style="display: flex; gap: 5px;">
-                    <a href="{{ route('courses.show', $course->id) }}" class="btn-action btn-detail">Detail</a>
-                    <a href="{{ route('courses.edit', $course->id) }}" class="btn-action btn-edit">Edit</a>
-                    <form action="{{ route('courses.destroy', $course->id) }}" method="POST" style="display: inline;" onsubmit="return confirm('Yakin ingin menghapus kursus ini?')">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="btn-action btn-delete">Hapus</button>
-                    </form>
-                </td>
-            </tr>
-            @empty
-            <tr>
-                <td colspan="7" style="text-align: center; color: #888;">Belum ada kursus.</td>
-            </tr>
-            @endforelse
-        </tbody>
-    </table>
-</div>
-
-<style>
-    .btn-action {
-        padding: 6px 14px;
-        border-radius: 6px;
-        font-size: 13px;
-        font-weight: 600;
-        text-decoration: none;
-        border: 1px solid;
-        cursor: pointer;
-        background: #fff;
-    }
-    .btn-detail {
-        color: #00897b;
-        border-color: #00897b;
-    }
-    .btn-detail:hover {
-        background: #00897b;
-        color: #fff;
-    }
-    .btn-edit {
-        color: #f57f17;
-        border-color: #f57f17;
-    }
-    .btn-edit:hover {
-        background: #f57f17;
-        color: #fff;
-    }
-    .btn-delete {
-        color: #c62828;
-        border-color: #c62828;
-    }
-    .btn-delete:hover {
-        background: #c62828;
-        color: #fff;
-    }
-    .badge {
-        padding: 4px 12px;
-        border-radius: 12px;
-        font-size: 12px;
-        font-weight: 600;
-    }
-    .badge.open { background: #e8f5e9; color: #2e7d32; }
-    .badge.closed { background: #ffebee; color: #c62828; }
-    .badge.full { background: #fff8e1; color: #f57f17; }
-    .badge.draft { background: #f5f5f5; color: #616161; }
-</style>
-@endsection
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
